@@ -3,7 +3,6 @@
 #include <QByteArray>
 #include <QHash>
 #include <iostream>
-#include <QString>
 
 struct Figure
 {
@@ -11,7 +10,6 @@ struct Figure
   int x;
   int y;
 };
-
 
 struct Logic::Impl
 {

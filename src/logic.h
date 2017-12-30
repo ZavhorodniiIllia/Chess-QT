@@ -25,7 +25,15 @@ public:
     int boardSize() const;
 
     Q_INVOKABLE void clear();
-    Q_INVOKABLE bool move(int fromX, int fromY, int toX, int toY);
+    Q_INVOKABLE bool move(int fromX, int fromY, int toX, int toY, int type);
+
+    Q_INVOKABLE bool bishop_move(int fromX, int fromY, int toX, int toY);
+    Q_INVOKABLE bool king_move(int fromX, int fromY, int toX, int toY);
+    Q_INVOKABLE bool knight_move(int fromX, int fromY, int toX, int toY);
+    Q_INVOKABLE bool black_pawn_move(int fromX, int fromY, int toX, int toY);
+    Q_INVOKABLE bool queen_move(int fromX, int fromY, int toX, int toY);
+    Q_INVOKABLE bool rook_move(int fromX, int fromY, int toX, int toY);
+    Q_INVOKABLE bool white_pawn_move(int fromX, int fromY, int toX, int toY);
 
 protected:
     int rowCount(const QModelIndex & parent) const override;

@@ -50,7 +50,7 @@ ApplicationWindow {
           y: squareSize * positionY
 
           source: images[type].imgPath
-          
+
           MouseArea {
             anchors.fill: parent
             drag.target: parent
@@ -68,8 +68,7 @@ ApplicationWindow {
               var fromY = startY / squareSize;
               var toX   = (parent.x + mouseX) / squareSize;
               var toY   = (parent.y + mouseY) / squareSize;
-
-              if (!logic.move(fromX, fromY, toX, toY)) {
+              if (!logic.move(fromX, fromY, toX, toY, type)) {
                 parent.x = startX;
                 parent.y = startY;
               }

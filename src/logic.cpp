@@ -114,18 +114,98 @@ void Logic::clear() {
   endResetModel();
 }
 
-bool Logic::move(int fromX, int fromY, int toX, int toY) {
-  int index = impl->findByPosition(fromX, fromY);
+bool Logic::rook_move(int fromX, int fromY, int toX, int toY){
+    if (fromX == toX){
+        if(toY >= 0 || toY <= 7) return true;
+    }
+    else if(fromY == toY){
+        if(toX >= 0 || toX <= 7) return true;
+    }
+    else return false;
+}
+bool Logic::king_move(int fromX, int fromY, int toX, int toY){
+    if(abs(fromX-toX) == 1 && abs(fromY-toY) == 1) return true;
+    else if(fromY == toY && abs(fromX-toX) == 1) return true;
+    else if(fromX == toX && abs(fromY-toY) == 1) return true;
+    else return false;
 
-  if (index < 0) return false;
-  
-  if (toX < 0 || toX >= BOARD_SIZE || toY < 0 || toY >= BOARD_SIZE || impl->findByPosition(toX, toY) >= 0) {
-    return false;
+}
+bool Logic::knight_move(int fromX, int fromY, int toX, int toY){
+    if(abs(fromX-toX) == 2 && abs(fromY-toY) == 1) return true;
+    else if(abs(fromX-toX) == 1 && abs(fromY-toY) == 2) return true;
+    else return false;
+
+}
+bool Logic::black_pawn_move(int fromX, int fromY, int toX, int toY){
+    if(fromY == 6){
+        if(fromY-toY == 1 || fromY-toY == 2) return true;
+        else return false;
+    }
+    else{
+        if(fromY-toY == 1) return true;
+        else return false;
+    }
+}
+bool Logic::queen_move(int fromX, int fromY, int toX, int toY){
+    if(abs(fromX-toX) == abs(fromY-toY)) return true;
+    else if (fromX == toX){
+        if(toY >= 0 || toY <= 7) return true;
+    }
+    else if(fromY == toY){
+        if(toX >= 0 || toX <= 7) return true;
+    }
+    else return false;
+
+}
+bool Logic::bishop_move(int fromX, int fromY, int toX, int toY){
+    if(abs(fromX-toX) == abs(fromY-toY)) return true;
+    else return false;
+
+}
+bool Logic::white_pawn_move(int fromX, int fromY, int toX, int toY){
+    if(fromY == 1){
+        if(toY-fromY == 1 || toY-fromY==2)return true;
+        else return false;
+    }
+    else{
+        if(toY-fromY == 1) return true;
+        else return false;
+    }
+
+}
+
+bool Logic::move(int fromX, int fromY, int toX, int toY, int type) {
+  if ((fromX == toX) && (fromY == toY)){
+      return false;
   }
-  impl->figures[index].x = toX;
-  impl->figures[index].y = toY;
-  QModelIndex topLeft = createIndex(index, 0);
-  QModelIndex bottomRight = createIndex(index, 0);
-  emit dataChanged(topLeft, bottomRight);
-  return true;
+  else {
+      int index = impl->findByPosition(fromX, fromY);
+      int indexNext = impl->findByPosition(toX, toY);
+      bool flag;
+
+      if (index < 0) return false;
+
+      if (toX < 0 || toX >= BOARD_SIZE || toY < 0 || toY >= BOARD_SIZE || indexNext >=0) {
+        return false;
+      }
+      /*if ( indexNext >= 0){
+          impl->figures.removeAt(indexNext);
+      }*/
+      if (type == 0 || type == 6) flag = king_move(fromX, fromY, toX, toY);
+      else if(type == 1 || type == 7) flag = queen_move(fromX, fromY, toX, toY);
+      else if(type == 2 || type == 8) flag = bishop_move(fromX, fromY, toX, toY);
+      else if(type == 3 || type == 9) flag = knight_move(fromX, fromY, toX, toY);
+      else if(type == 4 || type == 10) flag = rook_move(fromX, fromY, toX, toY);
+      else if (type == 11) flag = black_pawn_move(fromX, fromY, toX, toY);
+      else if (type == 5) flag = white_pawn_move(fromX, fromY, toX, toY);
+      if(flag == true){
+          impl->figures[index].x = toX;
+          impl->figures[index].y = toY;
+          QModelIndex topLeft = createIndex(index, 0);
+          QModelIndex bottomRight = createIndex(index, 0);
+          emit dataChanged(topLeft, bottomRight);
+          return true;
+      }
+      else return false;
+  }
 }

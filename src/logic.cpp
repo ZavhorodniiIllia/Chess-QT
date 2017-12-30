@@ -33,39 +33,39 @@ Logic::Logic(QObject *parent)
   : QAbstractListModel(parent)
   , impl(new Impl()) 
 {
-  impl->figures << Figure { 0,   0, 0 };
-  impl->figures << Figure { "knight", 1, 0 };
-  impl->figures << Figure { "bishop", 2, 0 };
-  impl->figures << Figure { "queen",  3, 0 };
-  impl->figures << Figure { "king",   4, 0 };
-  impl->figures << Figure { "bishop", 5, 0 };
-  impl->figures << Figure { "knight", 6, 0 };
-  impl->figures << Figure { "rook",   7, 0 };
-  impl->figures << Figure { "pawn",   0, 1 };
-  impl->figures << Figure { "pawn",   1, 1 };
-  impl->figures << Figure { "pawn",   2, 1 };
-  impl->figures << Figure { "pawn",   3, 1 };
-  impl->figures << Figure { "pawn",   4, 1 };
-  impl->figures << Figure { "pawn",   5, 1 };
-  impl->figures << Figure { "pawn",   6, 1 };
-  impl->figures << Figure { "pawn",   7, 1 };
+  impl->figures << Figure { 4, 0, 0 };
+  impl->figures << Figure { 3, 1, 0 };
+  impl->figures << Figure { 2, 2, 0 };
+  impl->figures << Figure { 1, 3, 0 };
+  impl->figures << Figure { 0, 4, 0 };
+  impl->figures << Figure { 2, 5, 0 };
+  impl->figures << Figure { 3, 6, 0 };
+  impl->figures << Figure { 4, 7, 0 };
+  impl->figures << Figure { 5, 0, 1 };
+  impl->figures << Figure { 5, 1, 1 };
+  impl->figures << Figure { 5, 2, 1 };
+  impl->figures << Figure { 5, 3, 1 };
+  impl->figures << Figure { 5, 4, 1 };
+  impl->figures << Figure { 5, 5, 1 };
+  impl->figures << Figure { 5, 6, 1 };
+  impl->figures << Figure { 5, 7, 1 };
 
-  impl->figures << Figure { "rook",   0, 7 };
-  impl->figures << Figure { "knight", 1, 7 };
-  impl->figures << Figure { "bishop", 2, 7 };
-  impl->figures << Figure { "queen",  3, 7 };
-  impl->figures << Figure { "king",   4, 7 };
-  impl->figures << Figure { "bishop", 5, 7 };
-  impl->figures << Figure { "knight", 6, 7 };
-  impl->figures << Figure { "rook",   7, 0 };
-  impl->figures << Figure { "pawn",   0, 6 };
-  impl->figures << Figure { "pawn",   1, 6 };
-  impl->figures << Figure { "pawn",   2, 6 };
-  impl->figures << Figure { "pawn",   3, 6 };
-  impl->figures << Figure { "pawn",   4, 6 };
-  impl->figures << Figure { "pawn",   5, 6 };
-  impl->figures << Figure { "pawn",   6, 6 };
-  impl->figures << Figure { "pawn",   7, 6 };
+  impl->figures << Figure { 10, 0, 7 };
+  impl->figures << Figure { 9, 1, 7 };
+  impl->figures << Figure { 8, 2, 7 };
+  impl->figures << Figure { 7, 3, 7 };
+  impl->figures << Figure { 6, 4, 7 };
+  impl->figures << Figure { 8, 5, 7 };
+  impl->figures << Figure { 9, 6, 7 };
+  impl->figures << Figure { 10, 7, 7 };
+  impl->figures << Figure { 11, 0, 6 };
+  impl->figures << Figure { 11, 1, 6 };
+  impl->figures << Figure { 11, 2, 6 };
+  impl->figures << Figure { 11, 3, 6 };
+  impl->figures << Figure { 11, 4, 6 };
+  impl->figures << Figure { 11, 5, 6 };
+  impl->figures << Figure { 11, 6, 6 };
+  impl->figures << Figure { 11, 7, 6 };
 }
 
 Logic::~Logic() {

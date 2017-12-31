@@ -35,6 +35,8 @@ public:
     Q_INVOKABLE bool rook_move(int fromX, int fromY, int toX, int toY);
     Q_INVOKABLE bool white_pawn_move(int fromX, int fromY, int toX, int toY);
 
+    Q_INVOKABLE void deliting(int x);
+
 protected:
     int rowCount(const QModelIndex & parent) const override;
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override;

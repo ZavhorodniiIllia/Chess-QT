@@ -20,7 +20,7 @@ struct Logic::Impl
 
 int Logic::Impl::findByPosition(int x, int y) {
   for (int i(0); i<figures.size(); ++i) {
-    if (figures[i].x != x || figures[i].y != y ) { 
+    if (figures[i].x != x || figures[i].y != y ) {
       continue; 
     }
     return i;    
@@ -28,6 +28,12 @@ int Logic::Impl::findByPosition(int x, int y) {
   return -1;
 }
 
+void Logic::deliting(int x){
+    impl->figures.swap(x,impl->figures.size()-1);
+    beginResetModel();
+    impl->figures.removeLast();
+    endResetModel();
+}
 
 Logic::Logic(QObject *parent)
   : QAbstractListModel(parent)
@@ -114,12 +120,53 @@ void Logic::clear() {
   endResetModel();
 }
 
+
 bool Logic::rook_move(int fromX, int fromY, int toX, int toY){
+    int type = impl->findByPosition(fromX, fromY);
+    int a;
+    int b;
+    int count=0;
+    int indexDel;
     if (fromX == toX){
-        if(toY >= 0 || toY <= 7) return true;
-    }
+        if(fromY > toY){
+            a= toY;
+            b= fromY-1;
+        }
+        else{
+            a= fromY+1;
+            b= toY;
+        }
+        for(int i=a; i <= b; i++){
+            int index= impl->findByPosition(fromX, i);
+            if (index == -1 && i == b){
+                if(count == 0 ) return true;
+                else if(count == 1){
+                    deliting(indexDel);
+                    return true;
+                }
+                else if(count > 1) return false;
+            }
+            else{
+                if(((type>=0 && type<=15) && (index>=0 && index <=15)) || ((type>=16 && type<=31) && (index>=16 && index <=31)) ) return false;
+                else if(((type>=0 && type<=15) && (index>=16 && index <=31)) || ((type>=16 && type<=31) && (index>=0 && index <=15)) ){
+                    count ++;
+                    indexDel=index;
+                }
+            }
+        }
+            }
     else if(fromY == toY){
-        if(toX >= 0 || toX <= 7) return true;
+        if(fromX > toX){
+            a= toX+1;
+            b= fromX-1;
+        }
+        else{
+            a= fromX+1;
+            b= toX-1;
+        }
+        for(int i=a; i <= b; i++){
+            if (impl->findByPosition(i, fromY) == -1 && i == b) return true;
+        }
     }
     else return false;
 }
@@ -135,16 +182,6 @@ bool Logic::knight_move(int fromX, int fromY, int toX, int toY){
     else if(abs(fromX-toX) == 1 && abs(fromY-toY) == 2) return true;
     else return false;
 
-}
-bool Logic::black_pawn_move(int fromX, int fromY, int toX, int toY){
-    if(fromY == 6){
-        if(fromY-toY == 1 || fromY-toY == 2) return true;
-        else return false;
-    }
-    else{
-        if(fromY-toY == 1) return true;
-        else return false;
-    }
 }
 bool Logic::queen_move(int fromX, int fromY, int toX, int toY){
     if(abs(fromX-toX) == abs(fromY-toY)) return true;
@@ -162,7 +199,26 @@ bool Logic::bishop_move(int fromX, int fromY, int toX, int toY){
     else return false;
 
 }
+bool Logic::black_pawn_move(int fromX, int fromY, int toX, int toY){
+    for (int i= fromY-1; i > toY; i--){
+        if (impl->findByPosition(fromX, i) != -1){
+            return false;
+        }
+    }
+    if(fromY == 6){
+        if(fromY-toY == 1 || fromY-toY == 2) return true;
+        else return false;
+    }
+    else{
+        if(fromY-toY == 1) return true;
+        else return false;
+    }
+}
 bool Logic::white_pawn_move(int fromX, int fromY, int toX, int toY){
+    for (int i= fromY+1; i < toY; i++){
+        if (impl->findByPosition(fromX, i) != -1) return false;
+
+    }
     if(fromY == 1){
         if(toY-fromY == 1 || toY-fromY==2)return true;
         else return false;
@@ -188,9 +244,7 @@ bool Logic::move(int fromX, int fromY, int toX, int toY, int type) {
       if (toX < 0 || toX >= BOARD_SIZE || toY < 0 || toY >= BOARD_SIZE || indexNext >=0) {
         return false;
       }
-      /*if ( indexNext >= 0){
-          impl->figures.removeAt(indexNext);
-      }*/
+
       if (type == 0 || type == 6) flag = king_move(fromX, fromY, toX, toY);
       else if(type == 1 || type == 7) flag = queen_move(fromX, fromY, toX, toY);
       else if(type == 2 || type == 8) flag = bishop_move(fromX, fromY, toX, toY);

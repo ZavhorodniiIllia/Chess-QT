@@ -64,13 +64,13 @@ ApplicationWindow {
             }
 
             onReleased: {
-              var fromX = startX / squareSize;
-              var fromY = startY / squareSize;
+              var fromX = (startX / squareSize)+0.1;
+              var fromY = (startY / squareSize)+0.1;
               var toX   = (parent.x + mouseX) / squareSize;
               var toY   = (parent.y + mouseY) / squareSize;
               if (!logic.move(fromX, fromY, toX, toY, type)) {
-                parent.x = startX;
-                parent.y = startY;
+                parent.x = startX+1;
+                parent.y = startY+1;
               }
             }
           }

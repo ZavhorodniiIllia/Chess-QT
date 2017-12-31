@@ -35,6 +35,8 @@ public:
     Q_INVOKABLE bool rook_move(int fromX, int fromY, int toX, int toY);
     Q_INVOKABLE bool white_pawn_move(int fromX, int fromY, int toX, int toY);
 
+    Q_INVOKABLE bool pathFind_for_rook(int currentIndex, int index, int i, int to);
+    Q_INVOKABLE bool pathFind_for_king(int currentIndex, int index);
     Q_INVOKABLE void deliting(int x);
 
 protected:

@@ -120,114 +120,151 @@ void Logic::clear() {
   endResetModel();
 }
 
+bool Logic::pathFind_for_rook(int currentIndex, int index, int i, int to){
+    if(index != -1 && i == to){
+        if ((currentIndex >= 0 && currentIndex <=15) && (index >=16 && index <= 31) || (currentIndex >= 16 && currentIndex <=31) && (index >=0 && index <= 15)){
+            deliting(index);
+            return true;
+        }
+        else return false;
+    }
+    else if(index != -1) return false;
+    else if(index == -1 && i == to) return true;
+}
+
+bool Logic::pathFind_for_king(int currentIndex, int index){
+    if(index == -1)return true;
+    else if(index != -1)
+        if ((currentIndex >= 0 && currentIndex <=15) && (index >=16 && index <= 31) || (currentIndex >= 16 && currentIndex <=31) && (index >=0 && index <= 15)){
+            deliting(index);
+            return true;
+        }
+        else return false;
+}
 
 bool Logic::rook_move(int fromX, int fromY, int toX, int toY){
-    int type = impl->findByPosition(fromX, fromY);
-    int a;
-    int b;
-    int count=0;
-    int indexDel;
+    int currentIndex = impl->findByPosition(fromX, fromY);
+    bool res;
     if (fromX == toX){
         if(fromY > toY){
-            a= toY;
-            b= fromY-1;
+            for(int i = fromY-1 ; i >= toY; i--){
+                int index= impl->findByPosition(fromX, i);
+                res = pathFind_for_rook(currentIndex, index, i, toY);
+            }
+            return res;
         }
         else{
-            a= fromY+1;
-            b= toY;
+            for(int i=fromY+1; i <= toY; i++){
+                int index= impl->findByPosition(fromX, i);
+                res= pathFind_for_rook(currentIndex, index, i, toY);
+            }
+            return res;
         }
-        for(int i=a; i <= b; i++){
-            int index= impl->findByPosition(fromX, i);
-            if (index == -1 && i == b){
-                if(count == 0 ) return true;
-                else if(count == 1){
-                    deliting(indexDel);
-                    return true;
-                }
-                else if(count > 1) return false;
-            }
-            else{
-                if(((type>=0 && type<=15) && (index>=0 && index <=15)) || ((type>=16 && type<=31) && (index>=16 && index <=31)) ) return false;
-                else if(((type>=0 && type<=15) && (index>=16 && index <=31)) || ((type>=16 && type<=31) && (index>=0 && index <=15)) ){
-                    count ++;
-                    indexDel=index;
-                }
-            }
-        }
-            }
+    }
     else if(fromY == toY){
         if(fromX > toX){
-            a= toX+1;
-            b= fromX-1;
+            for(int i = fromX-1 ; i >= toX; i--){
+                int index= impl->findByPosition(i, fromY);
+                res = pathFind_for_rook(currentIndex, index, i, toX);
+            }
+            return res;
         }
         else{
-            a= fromX+1;
-            b= toX-1;
-        }
-        for(int i=a; i <= b; i++){
-            if (impl->findByPosition(i, fromY) == -1 && i == b) return true;
+            for(int i= fromX+1; i <= toX; i++){
+                int index= impl->findByPosition(i, fromY);
+                res= pathFind_for_rook(currentIndex, index, i, toX);
+            }
+            return res;
         }
     }
     else return false;
 }
 bool Logic::king_move(int fromX, int fromY, int toX, int toY){
-    if(abs(fromX-toX) == 1 && abs(fromY-toY) == 1) return true;
-    else if(fromY == toY && abs(fromX-toX) == 1) return true;
-    else if(fromX == toX && abs(fromY-toY) == 1) return true;
+    int currentIndex = impl->findByPosition(fromX, fromY);
+    int index = impl->findByPosition(toX,toY);
+    if(abs(fromX-toX) == 1 && abs(fromY-toY) == 1) return pathFind_for_king(currentIndex, index);
+    else if(fromY == toY && abs(fromX-toX) == 1) return pathFind_for_king(currentIndex, index);
+    else if(fromX == toX && abs(fromY-toY) == 1) return pathFind_for_king(currentIndex, index);
     else return false;
 
 }
 bool Logic::knight_move(int fromX, int fromY, int toX, int toY){
-    if(abs(fromX-toX) == 2 && abs(fromY-toY) == 1) return true;
-    else if(abs(fromX-toX) == 1 && abs(fromY-toY) == 2) return true;
+    int currentIndex = impl->findByPosition(fromX, fromY);
+    int index = impl->findByPosition(toX,toY);
+    if(abs(fromX-toX) == 2 && abs(fromY-toY) == 1) return pathFind_for_king(currentIndex, index);
+    else if(abs(fromX-toX) == 1 && abs(fromY-toY) == 2) return pathFind_for_king(currentIndex, index);
     else return false;
 
 }
 bool Logic::queen_move(int fromX, int fromY, int toX, int toY){
-    if(abs(fromX-toX) == abs(fromY-toY)) return true;
+    if(abs(fromX-toX) == abs(fromY-toY)) return bishop_move(fromX, fromY, toX, toY);
     else if (fromX == toX){
-        if(toY >= 0 || toY <= 7) return true;
+        if(toY >= 0 || toY <= 7) return rook_move(fromX, fromY, toX, toY);
     }
     else if(fromY == toY){
-        if(toX >= 0 || toX <= 7) return true;
+        if(toX >= 0 || toX <= 7) return rook_move(fromX, fromY, toX, toY);
     }
     else return false;
 
 }
 bool Logic::bishop_move(int fromX, int fromY, int toX, int toY){
-    if(abs(fromX-toX) == abs(fromY-toY)) return true;
+    int currentIndex = impl->findByPosition(fromX, fromY);
+    int j=fromX;
+    bool res;
+    if(abs(fromX-toX) == abs(fromY-toY)){
+        if(fromY > toY && fromX > toX){
+            for(int i = fromY-1 ; i >= toY; i--){
+                j--;
+                int index= impl->findByPosition(j, i);
+                res = pathFind_for_rook(currentIndex, index, i, toY);
+            }
+            return res;
+        }
+        else if(fromY > toY && fromX < toX){
+            for(int i = fromY-1 ; i >= toY; i--){
+                j++;
+                int index= impl->findByPosition(j, i);
+                res = pathFind_for_rook(currentIndex, index, i, toY);
+            }
+            return res;
+        }
+        else if(fromY < toY && fromX < toX){
+            for(int i=fromY+1; i <= toY; i++){
+                j++;
+                int index= impl->findByPosition(j, i);
+                res= pathFind_for_rook(currentIndex, index, i, toY);
+            }
+            return res;
+        }
+        else if(fromY < toY && fromX > toX){
+            for(int i=fromY+1; i <= toY; i++){
+                j--;
+                int index= impl->findByPosition(j, i);
+                res= pathFind_for_rook(currentIndex, index, i, toY);
+            }
+            return res;
+        }
+    }
     else return false;
 
 }
 bool Logic::black_pawn_move(int fromX, int fromY, int toX, int toY){
-    for (int i= fromY-1; i > toY; i--){
-        if (impl->findByPosition(fromX, i) != -1){
-            return false;
-        }
-    }
+    int index = impl->findByPosition(toX,toY);
     if(fromY == 6){
-        if(fromY-toY == 1 || fromY-toY == 2) return true;
+        if((fromY-toY == 1 || fromY-toY == 2) && index == -1) return true;
         else return false;
     }
-    else{
-        if(fromY-toY == 1) return true;
-        else return false;
-    }
+    else if((fromY-toY == 1) && index == -1) return true;
+    else return bishop_move(fromX, fromY, toX, toY);
 }
 bool Logic::white_pawn_move(int fromX, int fromY, int toX, int toY){
-    for (int i= fromY+1; i < toY; i++){
-        if (impl->findByPosition(fromX, i) != -1) return false;
-
-    }
+    int index = impl->findByPosition(toX,toY);
     if(fromY == 1){
-        if(toY-fromY == 1 || toY-fromY==2)return true;
+        if((toY-fromY == 1 || toY-fromY==2) && index == -1)return true;
         else return false;
     }
-    else{
-        if(toY-fromY == 1) return true;
-        else return false;
-    }
-
+    else if((toY-fromY == 1) && index == -1) return true;
+    else return bishop_move(fromX, fromY, toX, toY);
 }
 
 bool Logic::move(int fromX, int fromY, int toX, int toY, int type) {
@@ -236,12 +273,11 @@ bool Logic::move(int fromX, int fromY, int toX, int toY, int type) {
   }
   else {
       int index = impl->findByPosition(fromX, fromY);
-      int indexNext = impl->findByPosition(toX, toY);
       bool flag;
 
       if (index < 0) return false;
 
-      if (toX < 0 || toX >= BOARD_SIZE || toY < 0 || toY >= BOARD_SIZE || indexNext >=0) {
+      if (toX < 0 || toX >= BOARD_SIZE || toY < 0 || toY >= BOARD_SIZE ) {
         return false;
       }
 

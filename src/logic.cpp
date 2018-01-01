@@ -122,7 +122,11 @@ void Logic::clear() {
 
 bool Logic::pathFind_for_rook(int currentIndex, int index, int i, int to){
     if(index != -1 && i == to){
-        if ((currentIndex >= 0 && currentIndex <=15) && (index >=16 && index <= 31) || (currentIndex >= 16 && currentIndex <=31) && (index >=0 && index <= 15)){
+        if (((currentIndex >= 0 && currentIndex <=15) && (index >=16 && index <= 31)) || ((currentIndex >= 16 && currentIndex <=31) && (index >=0 && index <= 15))){
+            if (index == 4 || index == 20){
+                clear();
+                return false;
+            }
             deliting(index);
             return true;
         }
@@ -130,16 +134,22 @@ bool Logic::pathFind_for_rook(int currentIndex, int index, int i, int to){
     }
     else if(index != -1) return false;
     else if(index == -1 && i == to) return true;
+    return false;
 }
 
 bool Logic::pathFind_for_king(int currentIndex, int index){
     if(index == -1)return true;
     else if(index != -1)
-        if ((currentIndex >= 0 && currentIndex <=15) && (index >=16 && index <= 31) || (currentIndex >= 16 && currentIndex <=31) && (index >=0 && index <= 15)){
+        if (((currentIndex >= 0 && currentIndex <=15) && (index >=16 && index <= 31)) || ((currentIndex >= 16 && currentIndex <=31) && (index >=0 && index <= 15))){
+            if (index == 4 || index == 20){
+                clear();
+                return false;
+            }
             deliting(index);
             return true;
         }
         else return false;
+    return false;
 }
 
 bool Logic::rook_move(int fromX, int fromY, int toX, int toY){
@@ -240,7 +250,7 @@ bool Logic::bishop_move(int fromX, int fromY, int toX, int toY){
         }
     }
     else return false;
-
+    return false;
 }
 bool Logic::black_pawn_move(int fromX, int fromY, int toX, int toY){
     int index = impl->findByPosition(toX,toY);
@@ -270,6 +280,7 @@ bool Logic::turn_check(int type){
         if(type >= 6 && type <= 11) return true;
         else return false;
     }
+    return false;
 }
 
 bool Logic::move(int fromX, int fromY, int toX, int toY, int type) {

@@ -197,15 +197,9 @@ bool Logic::knight_move(int fromX, int fromY, int toX, int toY){
 
 }
 bool Logic::queen_move(int fromX, int fromY, int toX, int toY){
-    if(abs(fromX-toX) == abs(fromY-toY)) return bishop_move(fromX, fromY, toX, toY);
-    else if (fromX == toX){
-        if(toY >= 0 || toY <= 7) return rook_move(fromX, fromY, toX, toY);
-    }
-    else if(fromY == toY){
-        if(toX >= 0 || toX <= 7) return rook_move(fromX, fromY, toX, toY);
-    }
+    if(bishop_move(fromX, fromY, toX, toY) == true) return true;
+    else if(rook_move(fromX, fromY, toX, toY) == true) return true;
     else return false;
-
 }
 bool Logic::bishop_move(int fromX, int fromY, int toX, int toY){
     int currentIndex = impl->findByPosition(fromX, fromY);
@@ -267,10 +261,20 @@ bool Logic::white_pawn_move(int fromX, int fromY, int toX, int toY){
     else return bishop_move(fromX, fromY, toX, toY);
 }
 
+bool Logic::turn_check(int type){
+    if(turn_count%2 == 1){
+        if (type >= 0 && type <= 5) return true;
+        else return false;
+    }
+    else if(turn_count%2 == 0){
+        if(type >= 6 && type <= 11) return true;
+        else return false;
+    }
+}
+
 bool Logic::move(int fromX, int fromY, int toX, int toY, int type) {
-  if ((fromX == toX) && (fromY == toY)){
-      return false;
-  }
+  if ((fromX == toX) && (fromY == toY)) return false;
+  if (turn_check(type) == false) return false;
   else {
       int index = impl->findByPosition(fromX, fromY);
       bool flag;
@@ -294,6 +298,7 @@ bool Logic::move(int fromX, int fromY, int toX, int toY, int type) {
           QModelIndex topLeft = createIndex(index, 0);
           QModelIndex bottomRight = createIndex(index, 0);
           emit dataChanged(topLeft, bottomRight);
+          turn_count++;
           return true;
       }
       else return false;

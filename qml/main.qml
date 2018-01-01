@@ -2,13 +2,15 @@ import QtQuick 2.4
 import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
+import QtQuick.Window 2.2
 
 ApplicationWindow {
     title: qsTr("Chess")
+    id: screen_2
     visible: true
     width: 800
     height: 600
-    
+
     property int squareSize: 70
 
     property var images: [
@@ -26,19 +28,20 @@ ApplicationWindow {
       {'imgPath' : "/images/black_rook.svg"},
       {'imgPath' : "/images/black_pawn.svg"},    ]
 
+
     Item {
       id: gameBoard
       x: 0
       y: 0
       width : logic.boardSize * squareSize
       height: logic.boardSize * squareSize
-      
+
       Image {
         source: "/images/chess_board.jpg"
         height: gameBoard.height
         width: gameBoard.width
       }
-      
+
       Repeater {
         model: logic
 
@@ -78,17 +81,165 @@ ApplicationWindow {
       }
     }
 
+
     Button {
-      id: startButton
+      id: stopButton
       anchors.left: gameBoard.right
       anchors.right: parent.right
       anchors.leftMargin: 10
       anchors.rightMargin: 10
-      
-      text: "Clear"
+
+      text: "Stop"
 
       onClicked: {
-        logic.clear();
+        screen_1.show()
+        screen_2.hide()
       }
+    }
+
+    Button{
+        id: saveButton
+        y: 30
+        anchors.left: gameBoard.right
+        anchors.right: parent.right
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+
+        text: "Save"
+
+        onClicked: {
+
+        }
+    }
+    Window {
+        id: screen_1
+        visible: false
+        width: 800
+        height: 600
+
+        property int squareSize: 70
+
+        Item {
+            id: gameBoard1
+            x: 0
+            y: 0
+            width : logic.boardSize * squareSize
+            height: logic.boardSize * squareSize
+
+            Image {
+                source: "/images/chess_board.jpg"
+                height: gameBoard1.height
+                width: gameBoard1.width
+            }
+        }
+
+        Button {
+            id: startButton
+            anchors.left: gameBoard1.right
+            anchors.right: parent.right
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
+
+            text: "Start"
+
+            onClicked: {
+                screen_1.hide()
+                screen_2.show()
+            }
+        }
+        Button{
+            id: loadButton
+            y: 30
+            anchors.left: gameBoard1.right
+            anchors.right: parent.right
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
+
+            text: "Load"
+
+            onClicked: {
+                screen_3.show()
+                screen_1.hide()
+            }
+        }
+    }
+    Window {
+        id: screen_3
+        visible: false
+        width: 800
+        height: 600
+
+        property int squareSize: 70
+
+        Item {
+          id: gameBoard2
+          x: 0
+          y: 0
+          width : logic.boardSize * squareSize
+          height: logic.boardSize * squareSize
+
+          Image {
+            source: "/images/chess_board.jpg"
+            height: gameBoard2.height
+            width: gameBoard2.width
+          }
+        }
+
+        Button {
+          id: startButton2
+          anchors.left: gameBoard2.right
+          anchors.right: parent.right
+          anchors.leftMargin: 10
+          anchors.rightMargin: 10
+
+          text: "Start"
+
+          onClicked: {
+              screen_3.hide()
+              screen_2.show()
+          }
+        }
+        Button{
+            id: loadButton2
+            y: 30
+            anchors.left: gameBoard2.right
+            anchors.right: parent.right
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
+
+            text: "Load"
+
+            onClicked: {
+
+            }
+        }
+        Button{
+            id: prevButton
+            y: 60
+            anchors.left: gameBoard2.right
+            anchors.right: parent.right
+            anchors.leftMargin: 10
+            anchors.rightMargin: 150
+
+            text: "Previous step"
+
+            onClicked: {
+
+            }
+        }
+        Button{
+            id: nextButton
+            y: 60
+            anchors.left: gameBoard2.right
+            anchors.right: parent.right
+            anchors.leftMargin: 150
+            anchors.rightMargin: 10
+
+            text: "Next step"
+
+            onClicked: {
+
+            }
+        }
     }
 }

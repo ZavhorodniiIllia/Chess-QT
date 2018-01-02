@@ -387,9 +387,11 @@ bool Logic::move(int fromX, int fromY, int toX, int toY, int type) {
   }
 }
 void Logic::set_figures(){
+    beginResetModel();
     impl->figures.clear();
     for(int i = 0; i < impl->figure.size(); i++){
         impl->figures << impl->figure[i];
 
     }
+    endResetModel();
 }

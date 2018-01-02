@@ -217,10 +217,7 @@ ApplicationWindow {
                     y: squareSize * positionY
 
                     source: screen_3.images[type].imgPath
-                    MouseArea{
-                        anchors.fill: parent
 
-                    }
                 }
 
             }

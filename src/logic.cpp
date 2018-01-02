@@ -210,6 +210,7 @@ bool Logic::rook_move(int fromX, int fromY, int toX, int toY){
             for(int i = fromY-1 ; i >= toY; i--){
                 int index= impl->findByPosition(fromX, i);
                 res = pathFind_for_rook(currentIndex, index, i, toY);
+                if(res == false) break;
             }
             return res;
         }
@@ -217,6 +218,7 @@ bool Logic::rook_move(int fromX, int fromY, int toX, int toY){
             for(int i=fromY+1; i <= toY; i++){
                 int index= impl->findByPosition(fromX, i);
                 res= pathFind_for_rook(currentIndex, index, i, toY);
+                if(res == false) break;
             }
             return res;
         }
@@ -226,6 +228,7 @@ bool Logic::rook_move(int fromX, int fromY, int toX, int toY){
             for(int i = fromX-1 ; i >= toX; i--){
                 int index= impl->findByPosition(i, fromY);
                 res = pathFind_for_rook(currentIndex, index, i, toX);
+                if(res == false) break;
             }
             return res;
         }
@@ -233,6 +236,7 @@ bool Logic::rook_move(int fromX, int fromY, int toX, int toY){
             for(int i= fromX+1; i <= toX; i++){
                 int index= impl->findByPosition(i, fromY);
                 res= pathFind_for_rook(currentIndex, index, i, toX);
+                if(res == false) break;
             }
             return res;
         }
@@ -271,6 +275,7 @@ bool Logic::bishop_move(int fromX, int fromY, int toX, int toY){
                 j--;
                 int index= impl->findByPosition(j, i);
                 res = pathFind_for_rook(currentIndex, index, i, toY);
+                if(res == false) break;
             }
             return res;
         }
@@ -279,6 +284,7 @@ bool Logic::bishop_move(int fromX, int fromY, int toX, int toY){
                 j++;
                 int index= impl->findByPosition(j, i);
                 res = pathFind_for_rook(currentIndex, index, i, toY);
+                if(res == false) break;
             }
             return res;
         }
@@ -287,6 +293,7 @@ bool Logic::bishop_move(int fromX, int fromY, int toX, int toY){
                 j++;
                 int index= impl->findByPosition(j, i);
                 res= pathFind_for_rook(currentIndex, index, i, toY);
+                if(res == false) break;
             }
             return res;
         }
@@ -295,6 +302,7 @@ bool Logic::bishop_move(int fromX, int fromY, int toX, int toY){
                 j--;
                 int index= impl->findByPosition(j, i);
                 res= pathFind_for_rook(currentIndex, index, i, toY);
+                if(res == false) break;
             }
             return res;
         }
@@ -305,20 +313,22 @@ bool Logic::bishop_move(int fromX, int fromY, int toX, int toY){
 bool Logic::black_pawn_move(int fromX, int fromY, int toX, int toY){
     int index = impl->findByPosition(toX,toY);
     if(fromY == 6){
-        if((fromY-toY == 1 || fromY-toY == 2) && index == -1) return true;
+        if(((fromY-toY == 1 && (fromX == toX)) || ((fromY-toY == 2) && (fromX == toX))) && index == -1) return true;
         else return false;
     }
-    else if((fromY-toY == 1) && index == -1) return true;
-    else return bishop_move(fromX, fromY, toX, toY);
+    else if(((fromY-toY == 1) && (fromY-toY == 1)) && index == -1) return true;
+    else if(((abs(fromX-toX) == 1) && (abs(fromY-toY)== 1)) && index != -1) return bishop_move(fromX, fromY, toX, toY);
+    return false;
 }
 bool Logic::white_pawn_move(int fromX, int fromY, int toX, int toY){
     int index = impl->findByPosition(toX,toY);
     if(fromY == 1){
-        if((toY-fromY == 1 || toY-fromY==2) && index == -1)return true;
+        if(((toY-fromY == 1 && (fromX == toX)) || ((toY-fromY == 2) && (fromX == toX))) && index == -1)return true;
         else return false;
     }
-    else if((toY-fromY == 1) && index == -1) return true;
-    else return bishop_move(fromX, fromY, toX, toY);
+    else if(((toY-fromY == 1) && (fromX == toX)) && index == -1) return true;
+    else if(((abs(fromX-toX) == 1) && (abs(fromY-toY)== 1)) && index != -1) return bishop_move(fromX, fromY, toX, toY);
+    return false;
 }
 
 bool Logic::turn_check(int type){
@@ -356,6 +366,8 @@ bool Logic::move(int fromX, int fromY, int toX, int toY, int type) {
       else if (type == 11) flag = black_pawn_move(fromX, fromY, toX, toY);
       else if (type == 5) flag = white_pawn_move(fromX, fromY, toX, toY);
       if(flag == true){
+          beginResetModel();
+          endResetModel();
           history += to_string(index) + " " + to_string(fromX) + ':' + to_string(fromY) + '-' + to_string(toX) + ':' + to_string(toY);
           if (del_figure != -1){
               history += " " + to_string(del_figure) + '\n';

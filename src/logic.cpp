@@ -3,6 +3,7 @@
 #include <QByteArray>
 #include <QHash>
 #include <iostream>
+#include <fstream>
 
 struct Figure
 {
@@ -13,6 +14,7 @@ struct Figure
 
 struct Logic::Impl
 {
+  QList<Figure> figure;
   QList<Figure> figures;
 
   int findByPosition(int x, int y);
@@ -28,50 +30,79 @@ int Logic::Impl::findByPosition(int x, int y) {
   return -1;
 }
 
-void Logic::deliting(int x){
-    impl->figures.swap(x,impl->figures.size()-1);
-    beginResetModel();
-    impl->figures.removeLast();
-    endResetModel();
-}
+
 
 Logic::Logic(QObject *parent)
   : QAbstractListModel(parent)
   , impl(new Impl()) 
 {
-  impl->figures << Figure { 4, 0, 0 };
-  impl->figures << Figure { 3, 1, 0 };
-  impl->figures << Figure { 2, 2, 0 };
-  impl->figures << Figure { 1, 3, 0 };
-  impl->figures << Figure { 0, 4, 0 };
-  impl->figures << Figure { 2, 5, 0 };
-  impl->figures << Figure { 3, 6, 0 };
-  impl->figures << Figure { 4, 7, 0 };
-  impl->figures << Figure { 5, 0, 1 };
-  impl->figures << Figure { 5, 1, 1 };
-  impl->figures << Figure { 5, 2, 1 };
-  impl->figures << Figure { 5, 3, 1 };
-  impl->figures << Figure { 5, 4, 1 };
-  impl->figures << Figure { 5, 5, 1 };
-  impl->figures << Figure { 5, 6, 1 };
-  impl->figures << Figure { 5, 7, 1 };
+    impl->figures << Figure { 4, 0, 0 };
+    impl->figures << Figure { 3, 1, 0 };
+    impl->figures << Figure { 2, 2, 0 };
+    impl->figures << Figure { 1, 3, 0 };
+    impl->figures << Figure { 0, 4, 0 };
+    impl->figures << Figure { 2, 5, 0 };
+    impl->figures << Figure { 3, 6, 0 };
+    impl->figures << Figure { 4, 7, 0 };
+    impl->figures << Figure { 5, 0, 1 };
+    impl->figures << Figure { 5, 1, 1 };
+    impl->figures << Figure { 5, 2, 1 };
+    impl->figures << Figure { 5, 3, 1 };
+    impl->figures << Figure { 5, 4, 1 };
+    impl->figures << Figure { 5, 5, 1 };
+    impl->figures << Figure { 5, 6, 1 };
+    impl->figures << Figure { 5, 7, 1 };
 
-  impl->figures << Figure { 10, 0, 7 };
-  impl->figures << Figure { 9, 1, 7 };
-  impl->figures << Figure { 8, 2, 7 };
-  impl->figures << Figure { 7, 3, 7 };
-  impl->figures << Figure { 6, 4, 7 };
-  impl->figures << Figure { 8, 5, 7 };
-  impl->figures << Figure { 9, 6, 7 };
-  impl->figures << Figure { 10, 7, 7 };
-  impl->figures << Figure { 11, 0, 6 };
-  impl->figures << Figure { 11, 1, 6 };
-  impl->figures << Figure { 11, 2, 6 };
-  impl->figures << Figure { 11, 3, 6 };
-  impl->figures << Figure { 11, 4, 6 };
-  impl->figures << Figure { 11, 5, 6 };
-  impl->figures << Figure { 11, 6, 6 };
-  impl->figures << Figure { 11, 7, 6 };
+    impl->figures << Figure { 10, 0, 7 };
+    impl->figures << Figure { 9, 1, 7 };
+    impl->figures << Figure { 8, 2, 7 };
+    impl->figures << Figure { 7, 3, 7 };
+    impl->figures << Figure { 6, 4, 7 };
+    impl->figures << Figure { 8, 5, 7 };
+    impl->figures << Figure { 9, 6, 7 };
+    impl->figures << Figure { 10, 7, 7 };
+    impl->figures << Figure { 11, 0, 6 };
+    impl->figures << Figure { 11, 1, 6 };
+    impl->figures << Figure { 11, 2, 6 };
+    impl->figures<< Figure { 11, 3, 6 };
+    impl->figures << Figure { 11, 4, 6 };
+    impl->figures << Figure { 11, 5, 6 };
+    impl->figures << Figure { 11, 6, 6 };
+    impl->figures << Figure { 11, 7, 6 };
+
+  impl->figure << Figure { 4, 0, 0 };
+  impl->figure << Figure { 3, 1, 0 };
+  impl->figure << Figure { 2, 2, 0 };
+  impl->figure << Figure { 1, 3, 0 };
+  impl->figure << Figure { 0, 4, 0 };
+  impl->figure << Figure { 2, 5, 0 };
+  impl->figure << Figure { 3, 6, 0 };
+  impl->figure << Figure { 4, 7, 0 };
+  impl->figure << Figure { 5, 0, 1 };
+  impl->figure << Figure { 5, 1, 1 };
+  impl->figure << Figure { 5, 2, 1 };
+  impl->figure << Figure { 5, 3, 1 };
+  impl->figure << Figure { 5, 4, 1 };
+  impl->figure << Figure { 5, 5, 1 };
+  impl->figure << Figure { 5, 6, 1 };
+  impl->figure << Figure { 5, 7, 1 };
+
+  impl->figure << Figure { 10, 0, 7 };
+  impl->figure << Figure { 9, 1, 7 };
+  impl->figure << Figure { 8, 2, 7 };
+  impl->figure << Figure { 7, 3, 7 };
+  impl->figure << Figure { 6, 4, 7 };
+  impl->figure << Figure { 8, 5, 7 };
+  impl->figure << Figure { 9, 6, 7 };
+  impl->figure << Figure { 10, 7, 7 };
+  impl->figure << Figure { 11, 0, 6 };
+  impl->figure << Figure { 11, 1, 6 };
+  impl->figure << Figure { 11, 2, 6 };
+  impl->figure << Figure { 11, 3, 6 };
+  impl->figure << Figure { 11, 4, 6 };
+  impl->figure << Figure { 11, 5, 6 };
+  impl->figure << Figure { 11, 6, 6 };
+  impl->figure << Figure { 11, 7, 6 };
 }
 
 Logic::~Logic() {
@@ -104,14 +135,31 @@ QVariant Logic::data(const QModelIndex & modelIndex, int role) const {
     return QVariant();
   }
 
-  Figure & figure = impl->figures[index];
+  Figure & figur = impl->figures[index];
     
   switch (role) {
-    case Roles::Type     : return figure.type;
-    case Roles::PositionX: return figure.x;
-    case Roles::PositionY: return figure.y;
+    case Roles::Type     : return figur.type;
+    case Roles::PositionX: return figur.x;
+    case Roles::PositionY: return figur.y;
   }
   return QVariant(); 
+}
+
+void Logic::deliting(int x){
+    //impl->figures.swap(x,impl->figures.size()-1);
+    beginResetModel();
+    impl->figures.removeAt(x);
+    endResetModel();
+}
+
+void Logic::save(){
+    ofstream his("history.txt");
+    his << history;
+    his.close();
+}
+
+void Logic::load(){
+     ifstream his("history.txt");
 }
 
 void Logic::clear() {
@@ -122,11 +170,12 @@ void Logic::clear() {
 
 bool Logic::pathFind_for_rook(int currentIndex, int index, int i, int to){
     if(index != -1 && i == to){
-        if (((currentIndex >= 0 && currentIndex <=15) && (index >=16 && index <= 31)) || ((currentIndex >= 16 && currentIndex <=31) && (index >=0 && index <= 15))){
-            if (index == 4 || index == 20){
+        if (((impl->figures[currentIndex].type >= 0 && impl->figures[currentIndex].type <= 5) && (impl->figures[index].type >=6 && impl->figures[index].type <= 11)) || ((impl->figures[currentIndex].type >= 6 && impl->figures[currentIndex].type <=11) && (impl->figures[index].type >=0 && impl->figures[index].type <= 5))){
+            if (impl->figures[currentIndex].type == 0 || impl->figures[currentIndex].type == 6){
                 clear();
                 return false;
             }
+            del_figure = index;
             deliting(index);
             return true;
         }
@@ -140,11 +189,12 @@ bool Logic::pathFind_for_rook(int currentIndex, int index, int i, int to){
 bool Logic::pathFind_for_king(int currentIndex, int index){
     if(index == -1)return true;
     else if(index != -1)
-        if (((currentIndex >= 0 && currentIndex <=15) && (index >=16 && index <= 31)) || ((currentIndex >= 16 && currentIndex <=31) && (index >=0 && index <= 15))){
-            if (index == 4 || index == 20){
+        if (((impl->figures[currentIndex].type >= 0 && impl->figures[currentIndex].type <= 5) && (impl->figures[index].type >=6 && impl->figures[index].type <= 11)) || ((impl->figures[currentIndex].type >= 6 && impl->figures[currentIndex].type <=11) && (impl->figures[index].type >=0 && impl->figures[index].type <= 5))){
+            if (impl->figures[currentIndex].type == 0 || impl->figures[currentIndex].type == 6){
                 clear();
                 return false;
             }
+            del_figure = index;
             deliting(index);
             return true;
         }
@@ -283,6 +333,8 @@ bool Logic::turn_check(int type){
     return false;
 }
 
+
+
 bool Logic::move(int fromX, int fromY, int toX, int toY, int type) {
   if ((fromX == toX) && (fromY == toY)) return false;
   if (turn_check(type) == false) return false;
@@ -304,6 +356,13 @@ bool Logic::move(int fromX, int fromY, int toX, int toY, int type) {
       else if (type == 11) flag = black_pawn_move(fromX, fromY, toX, toY);
       else if (type == 5) flag = white_pawn_move(fromX, fromY, toX, toY);
       if(flag == true){
+          history += to_string(index) + " " + to_string(fromX) + ':' + to_string(fromY) + '-' + to_string(toX) + ':' + to_string(toY);
+          if (del_figure != -1){
+              history += " " + to_string(del_figure) + '\n';
+              del_figure = -1;
+          }
+          else history += '\n';
+          index = impl->findByPosition(fromX, fromY);
           impl->figures[index].x = toX;
           impl->figures[index].y = toY;
           QModelIndex topLeft = createIndex(index, 0);
@@ -314,4 +373,11 @@ bool Logic::move(int fromX, int fromY, int toX, int toY, int type) {
       }
       else return false;
   }
+}
+void Logic::set_figures(){
+    impl->figures.clear();
+    for(int i = 0; i < impl->figure.size(); i++){
+        impl->figures << impl->figure[i];
+
+    }
 }

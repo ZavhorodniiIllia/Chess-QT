@@ -39,7 +39,7 @@ ApplicationWindow {
         text: "Start"
 
         onClicked: {
-
+            logic.set_figures();
             screen_1.hide()
             screen_2.show()
         }
@@ -56,6 +56,7 @@ ApplicationWindow {
         text: "Load"
 
         onClicked: {
+            logic.set_figures();
             screen_3.show()
             screen_1.hide()
         }
@@ -148,7 +149,6 @@ ApplicationWindow {
           text: "Stop"
 
           onClicked: {
-            logic.set_figures();
             screen_1.show()
             screen_2.close()
           }
@@ -233,6 +233,7 @@ ApplicationWindow {
             text: "Start"
 
             onClicked: {
+                logic.set_figures();
                 screen_3.close()
                 screen_2.show()
             }
@@ -262,7 +263,7 @@ ApplicationWindow {
             text: "Previous step"
 
             onClicked: {
-
+                logic.prev_step();
             }
         }
         Button{
@@ -277,7 +278,7 @@ ApplicationWindow {
 
 
             onClicked: {
-                this.parent.children[0].children[1].visible= false;
+                logic.next_step();
 
             }
         }

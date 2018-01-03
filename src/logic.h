@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdlib>
 #include <memory>
 #include <string>
 #include <QAbstractListModel>
@@ -10,8 +11,9 @@ class Logic: public QAbstractListModel
     Q_OBJECT
 public:
     int turn_count = 1;
-    int step = 0;
+    int step = -1;
     int del_figure = -1;
+    int del_type = -1;
     string history = "";
     enum GlobalConstants {
         BOARD_SIZE = 8
@@ -45,7 +47,8 @@ public:
     Q_INVOKABLE bool pathFind_for_king(int currentIndex, int index);
     Q_INVOKABLE bool turn_check(int type);
     Q_INVOKABLE void save();
-    Q_INVOKABLE void load();
+    Q_INVOKABLE void next_step();
+    Q_INVOKABLE void prev_step();
     Q_INVOKABLE void set_figures();
     Q_INVOKABLE void deliting(int x);
 

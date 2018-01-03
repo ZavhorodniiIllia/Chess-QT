@@ -36,40 +36,6 @@ Logic::Logic(QObject *parent)
   : QAbstractListModel(parent)
   , impl(new Impl()) 
 {
-    impl->figures << Figure { 4, 0, 0 };
-    impl->figures << Figure { 3, 1, 0 };
-    impl->figures << Figure { 2, 2, 0 };
-    impl->figures << Figure { 1, 3, 0 };
-    impl->figures << Figure { 0, 4, 0 };
-    impl->figures << Figure { 2, 5, 0 };
-    impl->figures << Figure { 3, 6, 0 };
-    impl->figures << Figure { 4, 7, 0 };
-    impl->figures << Figure { 5, 0, 1 };
-    impl->figures << Figure { 5, 1, 1 };
-    impl->figures << Figure { 5, 2, 1 };
-    impl->figures << Figure { 5, 3, 1 };
-    impl->figures << Figure { 5, 4, 1 };
-    impl->figures << Figure { 5, 5, 1 };
-    impl->figures << Figure { 5, 6, 1 };
-    impl->figures << Figure { 5, 7, 1 };
-
-    impl->figures << Figure { 10, 0, 7 };
-    impl->figures << Figure { 9, 1, 7 };
-    impl->figures << Figure { 8, 2, 7 };
-    impl->figures << Figure { 7, 3, 7 };
-    impl->figures << Figure { 6, 4, 7 };
-    impl->figures << Figure { 8, 5, 7 };
-    impl->figures << Figure { 9, 6, 7 };
-    impl->figures << Figure { 10, 7, 7 };
-    impl->figures << Figure { 11, 0, 6 };
-    impl->figures << Figure { 11, 1, 6 };
-    impl->figures << Figure { 11, 2, 6 };
-    impl->figures<< Figure { 11, 3, 6 };
-    impl->figures << Figure { 11, 4, 6 };
-    impl->figures << Figure { 11, 5, 6 };
-    impl->figures << Figure { 11, 6, 6 };
-    impl->figures << Figure { 11, 7, 6 };
-
   impl->figure << Figure { 4, 0, 0 };
   impl->figure << Figure { 3, 1, 0 };
   impl->figure << Figure { 2, 2, 0 };
@@ -146,7 +112,6 @@ QVariant Logic::data(const QModelIndex & modelIndex, int role) const {
 }
 
 void Logic::deliting(int x){
-    //impl->figures.swap(x,impl->figures.size()-1);
     beginResetModel();
     impl->figures.removeAt(x);
     endResetModel();
@@ -158,8 +123,53 @@ void Logic::save(){
     his.close();
 }
 
-void Logic::load(){
+void Logic::next_step(){
      ifstream his("history.txt");
+     step++;
+     string line = "";
+     string index = "";
+     string toX = "";
+     string toY = "";
+     string indexNext = "";
+     int space_count=0;
+     int count = 0;
+     while(getline(his, line)){
+         if(count == step) break;
+         count++;
+     }
+     if(line != ""){
+         for(int i = 0; i < line.size(); i++){
+             if(line[i] == ' ') space_count++;
+             else if(space_count == 0) index += line[i];
+             else if(space_count == 2){
+                 toX = line[i];
+                 toY = line[i+2];
+                 i+= 2;
+             }
+             else if(space_count == 3) indexNext+= line[i];
+             else if (line[i] == '\n') break;
+         }
+         beginResetModel();
+         impl-> figures[atoi(index.c_str())].x = atoi(toX.c_str());
+         impl-> figures[atoi(index.c_str())].y = atoi(toY.c_str());
+         endResetModel();
+         if(indexNext != "") deliting(atoi(indexNext.c_str()));
+     }
+}
+
+void Logic::prev_step(){
+     ifstream his("history.txt");
+     step--;
+     string line;
+     string sLine;
+     string index = "";
+     string toX = "";
+     string toY = "";
+     string indexNext = "";
+     string typeNext="";
+     int space_count=0;
+     int count = 0;
+
 }
 
 void Logic::clear() {
@@ -171,11 +181,12 @@ void Logic::clear() {
 bool Logic::pathFind_for_rook(int currentIndex, int index, int i, int to){
     if(index != -1 && i == to){
         if (((impl->figures[currentIndex].type >= 0 && impl->figures[currentIndex].type <= 5) && (impl->figures[index].type >=6 && impl->figures[index].type <= 11)) || ((impl->figures[currentIndex].type >= 6 && impl->figures[currentIndex].type <=11) && (impl->figures[index].type >=0 && impl->figures[index].type <= 5))){
-            if (impl->figures[currentIndex].type == 0 || impl->figures[currentIndex].type == 6){
+            if (impl->figures[index].type == 0 || impl->figures[index].type == 6){
                 clear();
                 return false;
             }
             del_figure = index;
+            del_type = impl->figures[index].type;
             deliting(index);
             return true;
         }
@@ -190,11 +201,12 @@ bool Logic::pathFind_for_king(int currentIndex, int index){
     if(index == -1)return true;
     else if(index != -1)
         if (((impl->figures[currentIndex].type >= 0 && impl->figures[currentIndex].type <= 5) && (impl->figures[index].type >=6 && impl->figures[index].type <= 11)) || ((impl->figures[currentIndex].type >= 6 && impl->figures[currentIndex].type <=11) && (impl->figures[index].type >=0 && impl->figures[index].type <= 5))){
-            if (impl->figures[currentIndex].type == 0 || impl->figures[currentIndex].type == 6){
+            if (impl->figures[index].type == 0 || impl->figures[index].type == 6){
                 clear();
                 return false;
             }
             del_figure = index;
+            del_type = impl->figures[index].type;
             deliting(index);
             return true;
         }
@@ -368,9 +380,9 @@ bool Logic::move(int fromX, int fromY, int toX, int toY, int type) {
       if(flag == true){
           beginResetModel();
           endResetModel();
-          history += to_string(index) + " " + to_string(fromX) + ':' + to_string(fromY) + '-' + to_string(toX) + ':' + to_string(toY);
+          history += to_string(index) + " " + to_string(fromX) + ':' + to_string(fromY) + " " + to_string(toX) + ':' + to_string(toY);
           if (del_figure != -1){
-              history += " " + to_string(del_figure) + '\n';
+              history += " " + to_string(del_figure) + " " + to_string(del_type) + '\n';
               del_figure = -1;
           }
           else history += '\n';

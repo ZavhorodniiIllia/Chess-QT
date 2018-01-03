@@ -15,6 +15,7 @@ public:
     int del_figure = -1;
     int del_type = -1;
     string history = "";
+
     enum GlobalConstants {
         BOARD_SIZE = 8
     };

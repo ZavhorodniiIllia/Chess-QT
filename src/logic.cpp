@@ -12,6 +12,16 @@ struct Figure
   int y;
 };
 
+struct Prev{
+    string index = "";
+    string fromX = "";
+    string fromY = "";
+    string indexNext = "";
+    string typeNext = "";
+    string toX = "";
+    string toY = "";
+};
+
 struct Logic::Impl
 {
   QList<Figure> figure;
@@ -125,12 +135,9 @@ void Logic::save(){
 
 void Logic::next_step(){
      ifstream his("history.txt");
-     step++;
      string line = "";
-     string index = "";
-     string toX = "";
-     string toY = "";
-     string indexNext = "";
+     step++;
+     Prev buf;
      int space_count=0;
      int count = 0;
      while(getline(his, line)){
@@ -140,36 +147,61 @@ void Logic::next_step(){
      if(line != ""){
          for(int i = 0; i < line.size(); i++){
              if(line[i] == ' ') space_count++;
-             else if(space_count == 0) index += line[i];
+             else if(space_count == 0) buf.index += line[i];
              else if(space_count == 2){
-                 toX = line[i];
-                 toY = line[i+2];
+                 buf.toX = line[i];
                  i+= 2;
+                 buf.toY = line[i];
              }
-             else if(space_count == 3) indexNext+= line[i];
+             else if(space_count == 3) buf.indexNext+= line[i];
              else if (line[i] == '\n') break;
          }
          beginResetModel();
-         impl-> figures[atoi(index.c_str())].x = atoi(toX.c_str());
-         impl-> figures[atoi(index.c_str())].y = atoi(toY.c_str());
+         impl-> figures[atoi(buf.index.c_str())].x = atoi(buf.toX.c_str());
+         impl-> figures[atoi(buf.index.c_str())].y = atoi(buf.toY.c_str());
          endResetModel();
-         if(indexNext != "") deliting(atoi(indexNext.c_str()));
+         if(buf.indexNext != "") deliting(atoi(buf.indexNext.c_str()));
      }
 }
 
 void Logic::prev_step(){
      ifstream his("history.txt");
-     step--;
      string line;
-     string sLine;
-     string index = "";
-     string toX = "";
-     string toY = "";
-     string indexNext = "";
-     string typeNext="";
+     Prev buf;
      int space_count=0;
      int count = 0;
 
+     if(step >= 0){
+        while(getline(his, line)){
+            if(count == step) break;
+            count++;
+        }
+        for(int i=0; i < line.size(); i++){
+            if(line[i] == ' ') space_count++;
+            else if(space_count == 0) buf.index+= line[i];
+            else if(space_count == 1){
+                buf.fromX = line[i];
+                i+= 2;
+                buf.fromY = line[i];
+            }
+            else if(space_count == 2) {
+                buf.toX = line[i];
+                i+= 2;
+                buf.toY = line[i];
+            }
+            else if(space_count == 3) buf.indexNext+= line[i];
+            else if(space_count == 4) buf.typeNext+= line[i];
+            else if(line [i] == '\n') break;
+        }
+        beginResetModel();
+        if(buf.indexNext != ""){
+            impl->figures.insert(atoi(buf.indexNext.c_str()), Figure {atoi(buf.typeNext.c_str()), atoi(buf.toX.c_str()), atoi(buf.toY.c_str())});
+        }
+        impl->figures[atoi(buf.index.c_str())].x = atoi(buf.fromX.c_str());
+        impl->figures[atoi(buf.index.c_str())].y = atoi(buf.fromY.c_str());
+        endResetModel();
+        step--;
+     }
 }
 
 void Logic::clear() {
